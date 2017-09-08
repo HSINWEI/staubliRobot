@@ -1,0 +1,15 @@
+# asyn record
+file "$(ASYN)/db/asynRecord.db"
+{
+pattern
+{    P,       R,     PORT,   ADDR, IMAX, OMAX}
+{   CS8:,  asyn,      CS8,    0,  80,    80}
+}
+
+# Analog outputs
+file "$(TOP)/staubliRobotApp/Db/staubliRobot.template"
+{
+pattern
+{    P,       R,  PORT,   ADDR, SCAN}
+{  CS8,       :,   CS8,      0, "1 second"}
+}

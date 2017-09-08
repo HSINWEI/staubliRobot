@@ -1,0 +1,183 @@
+record(longout,"$(P)$(R)ReceipeSelect")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))RECEIPE_SELECT")
+}
+
+record(longin,"$(P)$(R)ReceipeSelect_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))RECEIPE_SELECT")
+    field(SCAN, "I/O Intr")
+    
+}
+
+record(bi,"$(P)$(R)EsStop_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))ES_STOP")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)ArmPower_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))ARM_POWER")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)AutoMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))AUTO_MODE")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)ManualMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))MANUAL_MODE")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)AtHome_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))AT_HOME")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)IsSettled_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))IS_SETTLED")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)JobDone_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))JOB_DONE")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)RobotStart_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))ROBOT_START")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)RobotStop_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))ROBOT_STOP")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)ProdMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))PROD_MODE")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)StepMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))STEP_MODE")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)RobotPause_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))ROBOT_PAUSE")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)GetFromTray_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))GET_FROM_TRAY")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)GetFromInspec_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))GET_FROM_INSPEC")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)RobotError_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))ROBOT_ERROR")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)RobotResetError_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))RESET_ERROR")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)ReceipeNow_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))RECEIPE_NOW")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}

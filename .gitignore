@@ -1,0 +1,10 @@
+O.*
+
+/bin/
+/dbd/
+/lib/
+
+envPaths
+
+.cproject
+.project
