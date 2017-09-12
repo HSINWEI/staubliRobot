@@ -65,6 +65,7 @@
 #define GET_FROM_INSPEC_PHYSICAL_LINK   "ModbusSrv-0\\Modbus-Bit\\mbDO[26]"
 #define ROBOT_EROR_PHYSICAL_LINK        "ModbusSrv-0\\Modbus-Bit\\mbDO[30]"
 #define ROBOT_RESET_ERROR_PHYSICAL_LINK "ModbusSrv-0\\Modbus-Bit\\mbDO[31]"
+#define SAMPLE_SPIN_PHYSICAL_LINK       "BasicIO-1\\%Q0"
 
 #define RECEIPE_mbDO_BASE_INDEX     100
 #define NUM_RECEIPES  100
@@ -86,8 +87,7 @@ public:
   virtual asynStatus sampleOut();
   virtual asynStatus sampleSpin(epicsInt32 value);
   virtual asynStatus robotPause(epicsInt32 value);
-  virtual asynStatus setStepMode();
-  virtual asynStatus getReadbackValues(std::vector<std::string> &physicalLink, std::vector<double> &value){};
+  virtual asynStatus EnterStepMode();
 
   // These should be private but are called from C
   CStaubli_Robot* robot;
@@ -113,12 +113,12 @@ protected:
   int RobotError_;
   int RobotResetError_;
   int ReceipeNow_;
+  int SampleSpin_;
   /*parameters in IOC level*/
   int ReceipeSelect_;
   int SampleIn_;
   int SampleOut_;
-  int SampleSpin_;
-  #define LAST_CS8_PARAM SampleSpin_
+  #define LAST_CS8_PARAM SampleOut_
 
 private:
 

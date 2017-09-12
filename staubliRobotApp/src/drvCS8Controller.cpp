@@ -113,8 +113,71 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
     else
       this->setTargetReceipeNo(0);
   }
+  else if (function == StepMode_)
+  {
+    std::vector<std::string> physicalLink;
+    std::vector<double> val;
+    physicalLink.push_back(STEP_MODE_PHYSICAL_LINK        ); val.push_back((double)value);
+    status = this->robot->write_ios_value(physicalLink, val);
+  }
+  else if (function == SampleSpin_)
+  {
+    std::vector<std::string> physicalLink;
+    std::vector<double> val;
+    physicalLink.push_back(SAMPLE_SPIN_PHYSICAL_LINK        ); val.push_back((double)value);
+    status = this->robot->write_ios_value(physicalLink, val);
+  }
+  else if (function == RobotPause_)
+  {
+    std::vector<std::string> physicalLink;
+    std::vector<double> val;
+    physicalLink.push_back(ROBOT_PAUSE_PHYSICAL_LINK        ); val.push_back((double)value);
+    status = this->robot->write_ios_value(physicalLink, val);
+  }
+
+  /*the following should not be set directly*/
+  else if (function == ProdMode_)
+  {
+    std::vector<std::string> physicalLink;
+    std::vector<double> val;
+    physicalLink.push_back(PROD_MODE_PHYSICAL_LINK        ); val.push_back((double)value);
+    status = this->robot->write_ios_value(physicalLink, val);
+  }
+  else if (function == GetFromTray_)
+  {
+    std::vector<std::string> physicalLink;
+    std::vector<double> val;
+    physicalLink.push_back(GET_FROM_TRAY_PHYSICAL_LINK        ); val.push_back((double)value);
+    status = this->robot->write_ios_value(physicalLink, val);
+  }
+  else if (function == GetFromInspec_)
+  {
+    std::vector<std::string> physicalLink;
+    std::vector<double> val;
+    physicalLink.push_back(GET_FROM_INSPEC_PHYSICAL_LINK        ); val.push_back((double)value);
+    status = this->robot->write_ios_value(physicalLink, val);
+  }
+  else if (function == RobotStart_)
+  {
+    std::vector<std::string> physicalLink;
+    std::vector<double> val;
+    physicalLink.push_back(ROBOT_START_PHYSICAL_LINK        ); val.push_back((double)value);
+    status = this->robot->write_ios_value(physicalLink, val);
+  }
+  else if (function == RobotStop_)
+  {
+    std::vector<std::string> physicalLink;
+    std::vector<double> val;
+    physicalLink.push_back(ROBOT_STOP_PHYSICAL_LINK        ); val.push_back((double)value);
+    status = this->robot->write_ios_value(physicalLink, val);
+  }
+  else
+  {
+
+  }
 
   callParamCallbacks(addr);
+
   if (status == 0) {
     asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
              "%s:%s, port %s, wrote %d to address %d\n",
@@ -208,7 +271,12 @@ asynStatus CS8Controller::robotPause(epicsInt32 value) {
   return asynSuccess;
 }
 
-asynStatus CS8Controller::setStepMode() {
+asynStatus CS8Controller::EnterStepMode() {
+  std::vector<std::string> physicalLink;
+  std::vector<double> newValue;
+  physicalLink.push_back(PROD_MODE_PHYSICAL_LINK        ); newValue.push_back(0);
+  physicalLink.push_back(STEP_MODE_PHYSICAL_LINK        ); newValue.push_back(1);
+  this->robot->write_ios_value(physicalLink, newValue);
   return asynSuccess;
 }
 
@@ -243,6 +311,7 @@ void CS8Controller::pollerThread()
   physicalLink[1].push_back(ROBOT_EROR_PHYSICAL_LINK       ); function[1].push_back(RobotError_     ); paramString[1].push_back(RobotErrorString     );
   physicalLink[1].push_back(ROBOT_RESET_ERROR_PHYSICAL_LINK); function[1].push_back(RobotResetError_); paramString[1].push_back(RobotResetErrorString);
   physicalLink[1].push_back(RECEIPE_NOW_PHYSICAL_LINK      ); function[1].push_back(ReceipeNow_     ); paramString[1].push_back(ReceipeNowString     );
+  physicalLink[1].push_back(SAMPLE_SPIN_PHYSICAL_LINK      ); function[1].push_back(SampleSpin_     ); paramString[1].push_back(SampleSpinString     );
 
   /*initialize*/
   lock();
@@ -259,7 +328,7 @@ void CS8Controller::pollerThread()
   {
     lock();
 
-    /*read ios */
+    /*CS8 controller level parameters */
     for(int i=0;i<POLLER_IOS_SET_NUMBER;i++)
     {
       if(physicalLink[i].empty()) continue;
@@ -274,12 +343,13 @@ void CS8Controller::pollerThread()
         if(newValue[i][k] != prevValue[i][k] || forceCallback_)
         {
           setIntegerParam(function[i][k], newValue[i][k]);
-          printf("%s: %s value update: new=%d, prev=%d\n", __func__, physicalLink[i][k].c_str(), newValue[i][k], prevValue[i][k]);
+          printf("%s: %s value update: new=%d, prev=%d\n", __func__, physicalLink[i][k].c_str(), (int)newValue[i][k], (int)prevValue[i][k]);
           prevValue[i][k] = newValue[i][k];
         }
       }
     }
 
+    /*IOC level parameters*/
     this->getTargetReceipeNo(&newReceipe);
     if (newReceipe != prevReceipe || forceCallback_)
     {
@@ -287,6 +357,8 @@ void CS8Controller::pollerThread()
       printf("%s: Receipt select update: new=%d, prev=%d\n", __func__, newReceipe, prevReceipe);
       prevReceipe = newReceipe;
     }
+
+
     forceCallback_ = 0;
     callParamCallbacks();
 
@@ -331,4 +403,3 @@ void drvCS8Register(void)
 extern "C" {
 epicsExportRegistrar(drvCS8Register);
 }
-

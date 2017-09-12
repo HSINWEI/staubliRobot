@@ -9,7 +9,6 @@ record(longin,"$(P)$(R)ReceipeSelect_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))RECEIPE_SELECT")
     field(SCAN, "I/O Intr")
-    
 }
 
 record(bi,"$(P)$(R)EsStop_RBV")
@@ -92,11 +91,29 @@ record(bi,"$(P)$(R)RobotStart_RBV")
     field(OSV, "MINOR")   
 }
 
+record(bo,"$(P)$(R)RobotStart")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))ROBOT_START")  
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
 record(bi,"$(P)$(R)RobotStop_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))ROBOT_STOP")
     field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bo,"$(P)$(R)RobotStop")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))ROBOT_STOP")  
     field(ZNAM, "0")
     field(ONAM, "1")
     field(OSV, "MINOR")   
@@ -112,11 +129,29 @@ record(bi,"$(P)$(R)ProdMode_RBV")
     field(OSV, "MINOR")   
 }
 
+record(bo,"$(P)$(R)ProdMode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))PROD_MODE")  
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
 record(bi,"$(P)$(R)StepMode_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))STEP_MODE")
     field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bo,"$(P)$(R)StepMode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))STEP_MODE")  
     field(ZNAM, "0")
     field(ONAM, "1")
     field(OSV, "MINOR")   
@@ -132,6 +167,15 @@ record(bi,"$(P)$(R)RobotPause_RBV")
     field(OSV, "MINOR")   
 }
 
+record(bo,"$(P)$(R)RobotPause")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))ROBOT_PAUSE")  
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
 record(bi,"$(P)$(R)GetFromTray_RBV")
 {
     field(DTYP, "asynInt32")
@@ -142,11 +186,29 @@ record(bi,"$(P)$(R)GetFromTray_RBV")
     field(OSV, "MINOR")   
 }
 
+record(bo,"$(P)$(R)GetFromTray")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))GET_FROM_TRAY")  
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
 record(bi,"$(P)$(R)GetFromInspec_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))GET_FROM_INSPEC")
     field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bo,"$(P)$(R)GetFromInspec")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))GET_FROM_INSPEC")  
     field(ZNAM, "0")
     field(ONAM, "1")
     field(OSV, "MINOR")   
@@ -172,11 +234,27 @@ record(bi,"$(P)$(R)RobotResetError_RBV")
     field(OSV, "MINOR")   
 }
 
-record(bi,"$(P)$(R)ReceipeNow_RBV")
+record(longin,"$(P)$(R)ReceipeNow_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))RECEIPE_NOW")
     field(SCAN, "I/O Intr")   
+}
+
+record(bi,"$(P)$(R)SampleSpin_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))SAMPLE_SPIN")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bo,"$(P)$(R)SampleSpin")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))SAMPLE_SPIN")  
     field(ZNAM, "0")
     field(ONAM, "1")
     field(OSV, "MINOR")   
