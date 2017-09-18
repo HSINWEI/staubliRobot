@@ -33,6 +33,7 @@
 #define RobotErrorString       "ROBOT_ERROR"
 #define RobotResetErrorString  "RESET_ERROR"
 #define ReceipeNowString       "RECEIPE_NOW"
+#define ReceipeInspecString    "RECEIPE_INSPEC"
 
 /*parameters in IOC level*/
 #define SampleInString         "SAMPLE_IN"
@@ -43,6 +44,7 @@
 /*asyn definitions*/
 #define MAX_SIGNALS         16
 #define DEFAULT_POLL_TIME   0.1
+#define CONSECUTIVE_CMDS_DELAY_TIME   0.1
 
 /*handle max physical link number is 10*/
 #define MAX_ACCESS_IOS      10  /* max physical links while issue read_ios/write_ios*/
@@ -73,6 +75,7 @@
 
 /*CS8 mbAO index map*/
 #define RECEIPE_NOW_PHYSICAL_LINK       "ModbusSrv-0\\Modbus-Word\\mbAO[1]"
+#define RECEIPE_INSPEC_PHYSICAL_LINK    "ModbusSrv-0\\Modbus-Word\\mbAO[4]" // former DelayInterval
 
 class CS8Controller : public asynPortDriver{
 public:
@@ -85,8 +88,6 @@ public:
   virtual asynStatus getTargetReceipeNo(epicsInt32 *value);
   virtual asynStatus sampleIn();
   virtual asynStatus sampleOut();
-  virtual asynStatus sampleSpin(epicsInt32 value);
-  virtual asynStatus robotPause(epicsInt32 value);
   virtual asynStatus EnterStepMode();
 
   // These should be private but are called from C
@@ -114,6 +115,7 @@ protected:
   int RobotResetError_;
   int ReceipeNow_;
   int SampleSpin_;
+  int ReceipeInspec_;
   /*parameters in IOC level*/
   int ReceipeSelect_;
   int SampleIn_;
@@ -123,6 +125,7 @@ protected:
 private:
 
   double pollTime_;
+  double consDelayTime_;
   int forceCallback_;
 };
 

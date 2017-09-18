@@ -259,3 +259,48 @@ record(bo,"$(P)$(R)SampleSpin")
     field(ONAM, "1")
     field(OSV, "MINOR")   
 }
+
+record(bi,"$(P)$(R)SampleIn_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))SAMPLE_IN")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bo,"$(P)$(R)SampleIn")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))SAMPLE_IN")  
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bi,"$(P)$(R)SampleOut_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))SAMPLE_OUT")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(bo,"$(P)$(R)SampleOut")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))SAMPLE_OUT")  
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+record(longin,"$(P)$(R)ReceipeInspec_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))RECEIPE_INSPEC")
+    field(SCAN, "I/O Intr")   
+}

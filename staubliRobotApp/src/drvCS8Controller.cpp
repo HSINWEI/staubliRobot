@@ -26,7 +26,8 @@ CS8Controller::CS8Controller(const char *portName, const char *ipAddress, const 
                      0,
                      0),  /* Default priority and stack size */
                      pollTime_(DEFAULT_POLL_TIME),
-                     forceCallback_(1)
+                     forceCallback_(1),
+                     consDelayTime_(CONSECUTIVE_CMDS_DELAY_TIME)
 {
 
   /*parameters in CS8 controller level*/
@@ -47,6 +48,7 @@ CS8Controller::CS8Controller(const char *portName, const char *ipAddress, const 
   createParam(RobotErrorString      , asynParamInt32,      &RobotError_);
   createParam(RobotResetErrorString , asynParamInt32,      &RobotResetError_);
   createParam(ReceipeNowString      , asynParamInt32,      &ReceipeNow_);
+  createParam(ReceipeInspecString   , asynParamInt32,      &ReceipeInspec_);
 
   /*parameters in IOC level*/
   createParam(SampleInString        , asynParamInt32,      &SampleIn_);
@@ -122,10 +124,22 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
   }
   else if (function == SampleSpin_)
   {
-    std::vector<std::string> physicalLink;
-    std::vector<double> val;
-    physicalLink.push_back(SAMPLE_SPIN_PHYSICAL_LINK        ); val.push_back((double)value);
-    status = this->robot->write_ios_value(physicalLink, val);
+    int isAtHome = 0;
+    getIntegerParam(AtHome_,         &isAtHome);
+
+    if (isAtHome)
+    {
+      std::vector<std::string> physicalLink;
+      std::vector<double> val;
+      physicalLink.push_back(SAMPLE_SPIN_PHYSICAL_LINK        ); val.push_back((double)value);
+      status = this->robot->write_ios_value(physicalLink, val);
+    }
+    else
+    {
+      printf("Do not permit sample spin: robot is not at home\n");
+      setIntegerParam(addr, function, 0);
+    }
+
   }
   else if (function == RobotPause_)
   {
@@ -134,6 +148,18 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
     physicalLink.push_back(ROBOT_PAUSE_PHYSICAL_LINK        ); val.push_back((double)value);
     status = this->robot->write_ios_value(physicalLink, val);
   }
+  else if (function == SampleIn_)
+  {
+    sampleIn();
+    setIntegerParam(addr, function, 0);
+  }
+  else if (function == SampleOut_)
+  {
+    sampleOut();
+    setIntegerParam(addr, function, 0);
+  }
+
+
 
   /*the following should not be set directly*/
   else if (function == ProdMode_)
@@ -256,18 +282,126 @@ asynStatus CS8Controller::getTargetReceipeNo(epicsInt32* targetReceipeNo) {
 }
 
 asynStatus CS8Controller::sampleIn() {
+  std::vector<std::string> physicalLink;
+  std::vector<double> newValue;
+
+  int isSampleSpin = 0;
+  int isRobotPause = 1;
+  int isSettled = 0;
+  int isAtHome = 0;
+  int receipeSelectNumber = 0;
+  int receipeNowNumber = 0;
+  int receipeInspecNumber = 0;
+
+  /*verify conditions*/
+  getIntegerParam(SampleSpin_,     &isSampleSpin);
+  getIntegerParam(RobotPause_,     &isRobotPause);
+  getIntegerParam(IsSettled_,      &isSettled);
+  getIntegerParam(AtHome_,         &isAtHome);
+  getIntegerParam(ReceipeSelect_,  &receipeSelectNumber);
+  getIntegerParam(ReceipeNow_,     &receipeNowNumber);
+  getIntegerParam(ReceipeInspec_,  &receipeInspecNumber);
+  if(isSampleSpin || isRobotPause || !isSettled || !isAtHome ||
+     receipeSelectNumber==0 || receipeNowNumber !=0 || receipeInspecNumber !=0)
+  {
+    printf("Do not permit sample in: expected values are shown in parentheses\n"
+           "isSampleSpin=%d (0), isRobotPause=%d (0), isSettled=%d (1), isAtHome=%d (1),"
+           "receipeSelectNumber=%d (!=0), receipeNowNumber=%d (0), receipeInspecNumber=%d (0)\n",
+           isSampleSpin, isRobotPause, isSettled, isAtHome,
+           receipeSelectNumber, receipeNowNumber, receipeInspecNumber);
+    return asynError;
+  }
+
+
+  /*prepare for sample in*/
+  physicalLink.push_back(PROD_MODE_PHYSICAL_LINK        ); newValue.push_back(0);
+  physicalLink.push_back(STEP_MODE_PHYSICAL_LINK        ); newValue.push_back(1);
+  physicalLink.push_back(GET_FROM_TRAY_PHYSICAL_LINK    ); newValue.push_back(1);
+  physicalLink.push_back(GET_FROM_INSPEC_PHYSICAL_LINK  ); newValue.push_back(0);
+  this->robot->write_ios_value(physicalLink, newValue);
+  epicsThreadSleep(consDelayTime_);
+
+  /* clear ios */
+  physicalLink.clear();
+  newValue.clear();
+
+#if 1
+  /* Two steps to make rising edge 'start' signal */
+  /* Step 1. set 'start' signal low */
+  physicalLink.push_back(ROBOT_START_PHYSICAL_LINK  ); newValue.push_back(0);
+  physicalLink.push_back(ROBOT_STOP_PHYSICAL_LINK   ); newValue.push_back(0);
+  this->robot->write_ios_value(physicalLink, newValue);
+
+  epicsThreadSleep(consDelayTime_);
+
+  /* Step 2. set 'start' signal high */
+  newValue[0]=1;
+#endif
+  /* Also update sample inspec */
+  physicalLink.push_back(RECEIPE_INSPEC_PHYSICAL_LINK  ); newValue.push_back(receipeSelectNumber);
+  this->robot->write_ios_value(physicalLink, newValue);
+
   return asynSuccess;
 }
 
 asynStatus CS8Controller::sampleOut() {
-  return asynSuccess;
-}
+  std::vector<std::string> physicalLink;
+  std::vector<double> newValue;
 
-asynStatus CS8Controller::sampleSpin(epicsInt32 value) {
-  return asynSuccess;
-}
+  int isSampleSpin = 0;
+  int isRobotPause = 1;
+  int isSettled = 0;
+  int isAtHome = 0;
+  int receipeSelectNumber = 0;
+  int receipeNowNumber = 0;
+  int receipeInspecNumber = 0;
 
-asynStatus CS8Controller::robotPause(epicsInt32 value) {
+  /*verify conditions*/
+  getIntegerParam(SampleSpin_,     &isSampleSpin);
+  getIntegerParam(RobotPause_,     &isRobotPause);
+  getIntegerParam(IsSettled_,      &isSettled);
+  getIntegerParam(AtHome_,         &isAtHome);
+  getIntegerParam(ReceipeSelect_,  &receipeSelectNumber);
+  getIntegerParam(ReceipeNow_,     &receipeNowNumber);
+  getIntegerParam(ReceipeInspec_,  &receipeInspecNumber);
+  if(isSampleSpin || isRobotPause || !isSettled || !isAtHome ||
+     receipeSelectNumber!=receipeInspecNumber || receipeNowNumber !=0 || receipeInspecNumber ==0)
+  {
+    printf("Do not permit sample out: expected values are shown in parentheses\n"
+           "isSampleSpin=%d (0), isRobotPause=%d (0), isSettled=%d (1), isAtHome=%d (1),"
+           "receipeSelectNumber=%d (receipeInspecNumber=%d), receipeNowNumber=%d (0), receipeInspecNumber=%d (!=0)\n",
+           isSampleSpin, isRobotPause, isSettled, isAtHome,
+           receipeSelectNumber, receipeInspecNumber, receipeNowNumber, receipeInspecNumber);
+    return asynError;
+  }
+
+  /*prepare for sample out*/
+  physicalLink.push_back(PROD_MODE_PHYSICAL_LINK        ); newValue.push_back(0);
+  physicalLink.push_back(STEP_MODE_PHYSICAL_LINK        ); newValue.push_back(1);
+  physicalLink.push_back(GET_FROM_TRAY_PHYSICAL_LINK    ); newValue.push_back(0);
+  physicalLink.push_back(GET_FROM_INSPEC_PHYSICAL_LINK  ); newValue.push_back(1);
+  this->robot->write_ios_value(physicalLink, newValue);
+  epicsThreadSleep(consDelayTime_);
+
+  /* clear ios */
+  physicalLink.clear();
+  newValue.clear();
+#if 1
+  /* Two steps to make rising edge 'start' signal */
+  /* Step 1: set 'start' signal low */
+  physicalLink.push_back(ROBOT_START_PHYSICAL_LINK  ); newValue.push_back(0);
+  physicalLink.push_back(ROBOT_STOP_PHYSICAL_LINK   ); newValue.push_back(0);
+  this->robot->write_ios_value(physicalLink, newValue);
+
+  epicsThreadSleep(consDelayTime_);
+
+  /* Step 2: set 'start' signal high */
+  newValue[0]=1;
+#endif
+  /* Also update sample inspec */
+  physicalLink.push_back(RECEIPE_INSPEC_PHYSICAL_LINK  ); newValue.push_back(0);
+  this->robot->write_ios_value(physicalLink, newValue);
+
   return asynSuccess;
 }
 
@@ -312,6 +446,7 @@ void CS8Controller::pollerThread()
   physicalLink[1].push_back(ROBOT_RESET_ERROR_PHYSICAL_LINK); function[1].push_back(RobotResetError_); paramString[1].push_back(RobotResetErrorString);
   physicalLink[1].push_back(RECEIPE_NOW_PHYSICAL_LINK      ); function[1].push_back(ReceipeNow_     ); paramString[1].push_back(ReceipeNowString     );
   physicalLink[1].push_back(SAMPLE_SPIN_PHYSICAL_LINK      ); function[1].push_back(SampleSpin_     ); paramString[1].push_back(SampleSpinString     );
+  physicalLink[1].push_back(RECEIPE_INSPEC_PHYSICAL_LINK   ); function[1].push_back(ReceipeInspec_  ); paramString[1].push_back(ReceipeInspecString     );
 
   /*initialize*/
   lock();
