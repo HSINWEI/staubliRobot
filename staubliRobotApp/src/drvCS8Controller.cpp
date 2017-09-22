@@ -125,9 +125,11 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
   else if (function == SampleSpin_)
   {
     int isAtHome = 0;
+    int isReceipeInspec = 0;
     getIntegerParam(AtHome_, &isAtHome);
+    getIntegerParam(ReceipeInspec_, &isReceipeInspec);
 
-    if (isAtHome)
+    if (isAtHome && isReceipeInspec )
     {
       std::vector<std::string> physicalLink;
       std::vector<double> val;
@@ -136,7 +138,7 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
     else
     {
-      printf("Do not permit sample spin: robot is not at home\n");
+      printf("Do not permit sample spin when sample is not in.\n");
       setIntegerParam(addr, function, 0);
     }
 
