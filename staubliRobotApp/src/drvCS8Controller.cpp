@@ -125,7 +125,7 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
   else if (function == SampleSpin_)
   {
     int isAtHome = 0;
-    getIntegerParam(AtHome_,         &isAtHome);
+    getIntegerParam(AtHome_, &isAtHome);
 
     if (isAtHome)
     {
@@ -325,7 +325,6 @@ asynStatus CS8Controller::sampleIn() {
   physicalLink.clear();
   newValue.clear();
 
-#if 1
   /* Two steps to make rising edge 'start' signal */
   /* Step 1. set 'start' signal low */
   physicalLink.push_back(ROBOT_START_PHYSICAL_LINK  ); newValue.push_back(0);
@@ -336,9 +335,6 @@ asynStatus CS8Controller::sampleIn() {
 
   /* Step 2. set 'start' signal high */
   newValue[0]=1;
-#endif
-  /* Also update sample inspec */
-  physicalLink.push_back(RECEIPE_INSPEC_PHYSICAL_LINK  ); newValue.push_back(receipeSelectNumber);
   this->robot->write_ios_value(physicalLink, newValue);
 
   return asynSuccess;
@@ -386,7 +382,7 @@ asynStatus CS8Controller::sampleOut() {
   /* clear ios */
   physicalLink.clear();
   newValue.clear();
-#if 1
+
   /* Two steps to make rising edge 'start' signal */
   /* Step 1: set 'start' signal low */
   physicalLink.push_back(ROBOT_START_PHYSICAL_LINK  ); newValue.push_back(0);
@@ -397,9 +393,6 @@ asynStatus CS8Controller::sampleOut() {
 
   /* Step 2: set 'start' signal high */
   newValue[0]=1;
-#endif
-  /* Also update sample inspec */
-  physicalLink.push_back(RECEIPE_INSPEC_PHYSICAL_LINK  ); newValue.push_back(0);
   this->robot->write_ios_value(physicalLink, newValue);
 
   return asynSuccess;
@@ -426,6 +419,14 @@ void CS8Controller::pollerThread()
   std::vector<double> prevValue[POLLER_IOS_SET_NUMBER];
   std::vector<int> function[POLLER_IOS_SET_NUMBER];
   int prevReceipe=-1, newReceipe;
+
+  /*for update receipe inspec */
+  int iosSetIndexReceipeNow=-1, linkIndexReceipeNow=-1, prevRecipeNow=-1;
+  int iosSetIndexReceipeInspec=-1, linkIndexReceipeInspec=-1;
+  int iosSetIndexGetFromInspec=-1, linkIndexGetFromInspec=-1;
+  std::vector<std::string> physicalLinkReceipeInspec;
+  std::vector<double> valueReceipeInspec;
+  physicalLinkReceipeInspec.push_back(RECEIPE_INSPEC_PHYSICAL_LINK); valueReceipeInspec.push_back(0);
 
   physicalLink[0].push_back(ES_STOP_PHYSICAL_LINK          ); function[0].push_back(EsStop_         ); paramString[0].push_back(EsStopString         );
   physicalLink[0].push_back(ARM_POWER_PHYSICAL_LINK        ); function[0].push_back(ArmPower_       ); paramString[0].push_back(ArmPowerString       );
@@ -459,6 +460,42 @@ void CS8Controller::pollerThread()
 
   unlock();
 
+  /* find index of RECEIPE_NOW_PHYSICAL_LINK*/
+  for(int i=0;i<POLLER_IOS_SET_NUMBER;i++)
+  {
+    size_t pos = std::find(physicalLink[i].begin(),physicalLink[i].end(), std::string(RECEIPE_NOW_PHYSICAL_LINK)) - physicalLink[i].begin();
+    if(pos < physicalLink[i].size())
+    {
+      iosSetIndexReceipeNow = i;
+      linkIndexReceipeNow = pos;
+      printf("ReceipeNow index [%d][%d]\n", iosSetIndexReceipeNow, linkIndexReceipeNow);
+    }
+  }
+
+  /* find index of RECEIPE_INSPEC_PHYSICAL_LINK*/
+  for(int i=0;i<POLLER_IOS_SET_NUMBER;i++)
+  {
+    size_t pos = std::find(physicalLink[i].begin(),physicalLink[i].end(), std::string(RECEIPE_INSPEC_PHYSICAL_LINK)) - physicalLink[i].begin();
+    if(pos < physicalLink[i].size())
+    {
+      iosSetIndexReceipeInspec = i;
+      linkIndexReceipeInspec = pos;
+      printf("ReceipeInspec index [%d][%d]\n", iosSetIndexReceipeInspec, linkIndexReceipeInspec);
+    }
+  }
+
+  /* find index of GET_FROM__INSPEC_PHYSICAL_LINK*/
+  for(int i=0;i<POLLER_IOS_SET_NUMBER;i++)
+  {
+    size_t pos = std::find(physicalLink[i].begin(),physicalLink[i].end(), std::string(GET_FROM_INSPEC_PHYSICAL_LINK)) - physicalLink[i].begin();
+    if(pos < physicalLink[i].size())
+    {
+      iosSetIndexGetFromInspec = i;
+      linkIndexGetFromInspec = pos;
+      printf("ReceipeInspec index [%d][%d]\n", iosSetIndexGetFromInspec, linkIndexGetFromInspec);
+    }
+  }
+
   while(1)
   {
     lock();
@@ -478,10 +515,47 @@ void CS8Controller::pollerThread()
         if(newValue[i][k] != prevValue[i][k] || forceCallback_)
         {
           setIntegerParam(function[i][k], newValue[i][k]);
-          printf("%s: %s value update: new=%d, prev=%d\n", __func__, physicalLink[i][k].c_str(), (int)newValue[i][k], (int)prevValue[i][k]);
+          printf("%s: %s value update: new=%d, prev=%d\n", __func__, paramString[i][k].c_str(), (int)newValue[i][k], (int)prevValue[i][k]);
           prevValue[i][k] = newValue[i][k];
         }
       }
+    }
+
+    /* update receipt inspec*/
+    if(prevRecipeNow != newValue[iosSetIndexReceipeNow][linkIndexReceipeNow])
+    { /* ReceipeNow either 0 to N or N to 0*/
+
+      prevRecipeNow = newValue[iosSetIndexReceipeNow][linkIndexReceipeNow];
+      printf("%s: RecipeNow=%d\n",__func__, prevRecipeNow);
+
+      /* at sample in  begin: ReceipeNow goes to N, ReceipeInspec is 0, GetFromInspec is 0 */
+      if(newValue[iosSetIndexReceipeNow][linkIndexReceipeNow] !=0 &&
+         newValue[iosSetIndexReceipeInspec][linkIndexReceipeInspec] == 0)
+      {
+        printf("%s: at sample in begin\n",__func__);
+        valueReceipeInspec[0] = newValue[iosSetIndexReceipeNow][linkIndexReceipeNow];
+        /* write value to CS8 controller */
+        this->robot->write_ios_value(physicalLinkReceipeInspec, valueReceipeInspec);
+        setIntegerParam(function[iosSetIndexReceipeInspec][linkIndexReceipeInspec],
+                        newValue[iosSetIndexReceipeInspec][linkIndexReceipeInspec]);
+      }
+      /* at sample in  end:   ReceipeNow goes to 0, ReceipeInspec is N, GetFromInspec is 0
+       * do nothing here */
+
+      /* at sample out begin: ReceipeNow goes to N, ReceipeInspec is N, GetFromInspec is 1
+       * do nothing here */
+
+      /* at sample out end:   ReceipeNow goes to 0, ReceipeInspec is N, GetFromInspec is 1 */
+      else if(newValue[iosSetIndexReceipeNow][linkIndexReceipeNow] == 0 &&
+              newValue[iosSetIndexReceipeInspec][linkIndexReceipeInspec] != 0 &&
+              newValue[iosSetIndexGetFromInspec][linkIndexGetFromInspec] == 1)
+      {
+        printf("%s: at sample out end\n",__func__);
+        valueReceipeInspec[0] = 0;
+        /* write value to CS8 controller */
+        this->robot->write_ios_value(physicalLinkReceipeInspec, valueReceipeInspec);
+      }
+
     }
 
     /*IOC level parameters*/
@@ -492,7 +566,6 @@ void CS8Controller::pollerThread()
       printf("%s: Receipt select update: new=%d, prev=%d\n", __func__, newReceipe, prevReceipe);
       prevReceipe = newReceipe;
     }
-
 
     forceCallback_ = 0;
     callParamCallbacks();

@@ -8,6 +8,7 @@
 #ifndef STAUBLIROBOT_STAUBLIROBOTAPP_SRC_DRVCS8CONTROLLER_H_
 #define STAUBLIROBOT_STAUBLIROBOTAPP_SRC_DRVCS8CONTROLLER_H_
 
+#include <algorithm>
 #include <iocsh.h>
 #include <epicsExport.h>
 #include <epicsThread.h>
@@ -125,8 +126,8 @@ protected:
 private:
 
   double pollTime_;
-  double consDelayTime_;
   int forceCallback_;
+  double consDelayTime_;
 };
 
 #define NUM_CS8_PARAMS  ((int)(&LAST_CS8_PARAM - &FIRST_CS8_PARAM + 1))
