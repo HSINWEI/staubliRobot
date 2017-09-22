@@ -54,6 +54,7 @@ CS8Controller::CS8Controller(const char *portName, const char *ipAddress, const 
   createParam(SampleInString        , asynParamInt32,      &SampleIn_);
   createParam(SampleOutString       , asynParamInt32,      &SampleOut_);
   createParam(SampleSpinString      , asynParamInt32,      &SampleSpin_);
+  createParam(SampleUnsafeSpinString, asynParamInt32,      &SampleUnsafeSpin_);
   createParam(ReceipeSelectString   , asynParamInt32,      &ReceipeSelect_);
 
   std::string ssPortName(portName);
@@ -139,6 +140,25 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
     else
     {
       printf("Do not permit sample spin when sample is not in.\n");
+      setIntegerParam(addr, function, 0);
+    }
+
+  }
+  else if (function == SampleUnsafeSpin_)
+  {
+    int isAtHome = 0;
+    getIntegerParam(AtHome_, &isAtHome);
+
+    if (isAtHome )
+    {
+      std::vector<std::string> physicalLink;
+      std::vector<double> val;
+      physicalLink.push_back(SAMPLE_SPIN_PHYSICAL_LINK        ); val.push_back((double)value);
+      status = this->robot->write_ios_value(physicalLink, val);
+    }
+    else
+    {
+      printf("Do not permit sample spin when sample is at home.\n");
       setIntegerParam(addr, function, 0);
     }
 

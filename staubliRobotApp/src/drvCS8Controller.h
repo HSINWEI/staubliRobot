@@ -40,6 +40,7 @@
 #define SampleInString         "SAMPLE_IN"
 #define SampleOutString        "SAMPLE_OUT"
 #define SampleSpinString       "SAMPLE_SPIN"
+#define SampleUnsafeSpinString "SAMPLE_UNSAFE_SPIN"
 #define ReceipeSelectString    "RECEIPE_SELECT"
 
 /*asyn definitions*/
@@ -116,6 +117,7 @@ protected:
   int RobotResetError_;
   int ReceipeNow_;
   int SampleSpin_;
+  int SampleUnsafeSpin_;
   int ReceipeInspec_;
   /*parameters in IOC level*/
   int ReceipeSelect_;

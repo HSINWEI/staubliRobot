@@ -260,6 +260,16 @@ record(bo,"$(P)$(R)SampleSpin")
     field(OSV, "MINOR")   
 }
 
+record(bo,"$(P)$(R)SampleUnsafeSpin")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR))SAMPLE_UNSAFE_SPIN")  
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
+}
+
+
 record(bi,"$(P)$(R)SampleIn_RBV")
 {
     field(DTYP, "asynInt32")
