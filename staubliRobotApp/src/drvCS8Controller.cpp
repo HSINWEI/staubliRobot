@@ -134,7 +134,7 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
     {
       std::vector<std::string> physicalLink;
       std::vector<double> val;
-      physicalLink.push_back(SAMPLE_SPIN_PHYSICAL_LINK        ); val.push_back((double)value);
+      physicalLink.push_back(SAMPLE_SPIN_PHYSICAL_LINK        ); val.push_back((double)(value?1.0:0.0));
       status = this->robot->write_ios_value(physicalLink, val);
     }
     else
@@ -153,7 +153,7 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
     {
       std::vector<std::string> physicalLink;
       std::vector<double> val;
-      physicalLink.push_back(SAMPLE_SPIN_PHYSICAL_LINK        ); val.push_back((double)value);
+      physicalLink.push_back(SAMPLE_SPIN_PHYSICAL_LINK        ); val.push_back((double)(value?1.0:0.0));
       status = this->robot->write_ios_value(physicalLink, val);
     }
     else
