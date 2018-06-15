@@ -1,13 +1,13 @@
-record(longout,"$(P)$(R)ReceipeSelect")
+record(longout,"$(P)$(R)RecipeSelect")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR))RECEIPE_SELECT")
+    field(OUT,  "@asyn($(PORT),$(ADDR))RECIPE_SELECT")
 }
 
-record(longin,"$(P)$(R)ReceipeSelect_RBV")
+record(longin,"$(P)$(R)RecipeSelect_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR))RECEIPE_SELECT")
+    field(INP,  "@asyn($(PORT),$(ADDR))RECIPE_SELECT")
     field(SCAN, "I/O Intr")
 }
 
@@ -234,10 +234,10 @@ record(bi,"$(P)$(R)RobotResetError_RBV")
     field(OSV, "MINOR")   
 }
 
-record(longin,"$(P)$(R)ReceipeNow_RBV")
+record(longin,"$(P)$(R)RecipeNow_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR))RECEIPE_NOW")
+    field(INP,  "@asyn($(PORT),$(ADDR))RECIPE_NOW")
     field(SCAN, "I/O Intr")   
 }
 
@@ -308,9 +308,9 @@ record(bo,"$(P)$(R)SampleOut")
     field(OSV, "MINOR")   
 }
 
-record(longin,"$(P)$(R)ReceipeInspec_RBV")
+record(longin,"$(P)$(R)RecipeInspec_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR))RECEIPE_INSPEC")
+    field(INP,  "@asyn($(PORT),$(ADDR))RECIPE_INSPEC")
     field(SCAN, "I/O Intr")   
 }

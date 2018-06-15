@@ -33,15 +33,15 @@
 #define GetFromInspecString    "GET_FROM_INSPEC"
 #define RobotErrorString       "ROBOT_ERROR"
 #define RobotResetErrorString  "RESET_ERROR"
-#define ReceipeNowString       "RECEIPE_NOW"
-#define ReceipeInspecString    "RECEIPE_INSPEC"
+#define RecipeNowString       "RECIPE_NOW"
+#define RecipeInspecString    "RECIPE_INSPEC"
 
 /*parameters in IOC level*/
 #define SampleInString         "SAMPLE_IN"
 #define SampleOutString        "SAMPLE_OUT"
 #define SampleSpinString       "SAMPLE_SPIN"
 #define SampleUnsafeSpinString "SAMPLE_UNSAFE_SPIN"
-#define ReceipeSelectString    "RECEIPE_SELECT"
+#define RecipeSelectString    "RECIPE_SELECT"
 
 /*asyn definitions*/
 #define MAX_SIGNALS         16
@@ -71,13 +71,13 @@
 #define ROBOT_RESET_ERROR_PHYSICAL_LINK "ModbusSrv-0\\Modbus-Bit\\mbDO[31]"
 #define SAMPLE_SPIN_PHYSICAL_LINK       "BasicIO-1\\%Q0"
 
-#define RECEIPE_mbDO_BASE_INDEX     100
-#define NUM_RECEIPES  100
-#define LAST_RECEIPE_INDEX  (NUM_RECEIPES-1)
+#define RECIPE_mbDO_BASE_INDEX     100
+#define NUM_RECIPES  100
+#define LAST_RECIPE_INDEX  (NUM_RECIPES-1)
 
 /*CS8 mbAO index map*/
-#define RECEIPE_NOW_PHYSICAL_LINK       "ModbusSrv-0\\Modbus-Word\\mbAO[1]"
-#define RECEIPE_INSPEC_PHYSICAL_LINK    "ModbusSrv-0\\Modbus-Word\\mbAO[4]" // former DelayInterval
+#define RECIPE_NOW_PHYSICAL_LINK       "ModbusSrv-0\\Modbus-Word\\mbAO[1]"
+#define RECIPE_INSPEC_PHYSICAL_LINK    "ModbusSrv-0\\Modbus-Word\\mbAO[4]" // former DelayInterval
 
 class CS8Controller : public asynPortDriver{
 public:
@@ -86,8 +86,8 @@ public:
   /* These are the methods that we override from asynPortDriver */
   virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
   virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-  virtual asynStatus setTargetReceipeNo(epicsInt32 value);
-  virtual asynStatus getTargetReceipeNo(epicsInt32 *value);
+  virtual asynStatus setTargetRecipeNo(epicsInt32 value);
+  virtual asynStatus getTargetRecipeNo(epicsInt32 *value);
   virtual asynStatus sampleIn();
   virtual asynStatus sampleOut();
   virtual asynStatus EnterStepMode();
@@ -115,12 +115,12 @@ protected:
   int GetFromInspec_;
   int RobotError_;
   int RobotResetError_;
-  int ReceipeNow_;
+  int RecipeNow_;
   int SampleSpin_;
   int SampleUnsafeSpin_;
-  int ReceipeInspec_;
+  int RecipeInspec_;
   /*parameters in IOC level*/
-  int ReceipeSelect_;
+  int RecipeSelect_;
   int SampleIn_;
   int SampleOut_;
   #define LAST_CS8_PARAM SampleOut_
