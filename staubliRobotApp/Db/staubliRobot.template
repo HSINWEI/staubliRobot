@@ -322,3 +322,25 @@ record(bi,"$(P)$(R)RobotBusy_RBV")
     field(ONAM, "1")
     field(OSV, "MINOR")   
 }
+
+record(bo,"$(P)$(R)AutoPause")
+{
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(OSV, "MINOR")   
+}
+
+record(calcout,"$(P)$(R)AutoPauseBroker")
+{
+    field(INPA, "$(P)$(R)AtHome_RBV CP")
+    field(INPB, "$(P)$(R)SampleIn_RBV CP")
+    field(INPC, "$(P)$(R)AutoPause CP")
+    field(CALC, "A")
+    field(OCAL, "B&&C")
+    field(DOPT, "Use OCAL")
+    field(OUT, "$(P)$(R)RobotPause PP")
+    #Transition to non-zero (5)
+    field(OOPT, "5")
+}
+
+

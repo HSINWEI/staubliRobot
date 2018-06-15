@@ -174,12 +174,10 @@ asynStatus CS8Controller::writeInt32(asynUser *pasynUser, epicsInt32 value)
   else if (function == SampleIn_)
   {
     sampleIn();
-    setIntegerParam(addr, function, 0);
   }
   else if (function == SampleOut_)
   {
     sampleOut();
-    setIntegerParam(addr, function, 0);
   }
 
 
@@ -571,6 +569,7 @@ void CS8Controller::pollerThread()
                     newValue[iosSetIndexGetFromInspec][linkIndexGetFromInspec] == 0)
       {
         setIntegerParam(RobotBusy_, 0);
+        setIntegerParam(SampleIn_, 0);
       }
       /* at sample out begin: RecipeNow goes to N, RecipeInspec is N, GetFromInspec is 1
        * do nothing here */
@@ -586,6 +585,7 @@ void CS8Controller::pollerThread()
         this->robot->write_ios_value(physicalLinkRecipeInspec, valueRecipeInspec);
 
         setIntegerParam(RobotBusy_, 0);
+        setIntegerParam(SampleOut_, 0);
       }
 
     }
