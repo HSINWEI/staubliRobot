@@ -2,6 +2,8 @@ record(longout,"$(P)$(R)RecipeSelect")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR))RECIPE_SELECT")
+    field(DRVH, "50")
+    field(DRVL, "1")
 }
 
 record(longin,"$(P)$(R)RecipeSelect_RBV")
@@ -309,4 +311,14 @@ record(longin,"$(P)$(R)RecipeInspec_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))RECIPE_INSPEC")
     field(SCAN, "I/O Intr")   
+}
+
+record(bi,"$(P)$(R)RobotBusy_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR))ROBOT_BUSY")
+    field(SCAN, "I/O Intr")   
+    field(ZNAM, "0")
+    field(ONAM, "1")
+    field(OSV, "MINOR")   
 }

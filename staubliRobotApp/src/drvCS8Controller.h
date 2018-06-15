@@ -42,6 +42,7 @@
 #define SampleSpinString       "SAMPLE_SPIN"
 #define SampleUnsafeSpinString "SAMPLE_UNSAFE_SPIN"
 #define RecipeSelectString    "RECIPE_SELECT"
+#define RobotBusyString        "ROBOT_BUSY"
 
 /*asyn definitions*/
 #define MAX_SIGNALS         16
@@ -123,7 +124,8 @@ protected:
   int RecipeSelect_;
   int SampleIn_;
   int SampleOut_;
-  #define LAST_CS8_PARAM SampleOut_
+  int RobotBusy_;
+  #define LAST_CS8_PARAM RobotBusy_
 
 private:
 

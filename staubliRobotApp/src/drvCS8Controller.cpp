@@ -56,6 +56,7 @@ CS8Controller::CS8Controller(const char *portName, const char *ipAddress, const 
   createParam(SampleSpinString      , asynParamInt32,      &SampleSpin_);
   createParam(SampleUnsafeSpinString, asynParamInt32,      &SampleUnsafeSpin_);
   createParam(RecipeSelectString   , asynParamInt32,      &RecipeSelect_);
+  createParam(RobotBusyString       , asynParamInt32,      &RobotBusy_);
 
   std::string ssPortName(portName);
   std::string ssIpAddress(ipAddress);
@@ -334,6 +335,7 @@ asynStatus CS8Controller::sampleIn() {
     return asynError;
   }
 
+  setIntegerParam(RobotBusy_, 1); /* set back to 0 in pollerThread() */
 
   /*prepare for sample in*/
   physicalLink.push_back(PROD_MODE_PHYSICAL_LINK        ); newValue.push_back(0);
@@ -392,6 +394,8 @@ asynStatus CS8Controller::sampleOut() {
            receipeSelectNumber, receipeInspecNumber, receipeNowNumber, receipeInspecNumber);
     return asynError;
   }
+
+  setIntegerParam(RobotBusy_, 1); /* set back to 0 in pollerThread() */
 
   /*prepare for sample out*/
   physicalLink.push_back(PROD_MODE_PHYSICAL_LINK        ); newValue.push_back(0);
@@ -561,9 +565,13 @@ void CS8Controller::pollerThread()
         setIntegerParam(function[iosSetIndexRecipeInspec][linkIndexRecipeInspec],
                         newValue[iosSetIndexRecipeInspec][linkIndexRecipeInspec]);
       }
-      /* at sample in  end:   RecipeNow goes to 0, RecipeInspec is N, GetFromInspec is 0
-       * do nothing here */
-
+      /* at sample in  end:   RecipeNow goes to 0, RecipeInspec is N, GetFromInspec is 0 */
+      else if(newValue[iosSetIndexRecipeNow][linkIndexRecipeNow] == 0 &&
+                    newValue[iosSetIndexRecipeInspec][linkIndexRecipeInspec] != 0 &&
+                    newValue[iosSetIndexGetFromInspec][linkIndexGetFromInspec] == 0)
+      {
+        setIntegerParam(RobotBusy_, 0);
+      }
       /* at sample out begin: RecipeNow goes to N, RecipeInspec is N, GetFromInspec is 1
        * do nothing here */
 
@@ -576,6 +584,8 @@ void CS8Controller::pollerThread()
         valueRecipeInspec[0] = 0;
         /* write value to CS8 controller */
         this->robot->write_ios_value(physicalLinkRecipeInspec, valueRecipeInspec);
+
+        setIntegerParam(RobotBusy_, 0);
       }
 
     }
