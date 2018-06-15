@@ -26,9 +26,8 @@ record(bi,"$(P)$(R)ArmPower_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))ARM_POWER")
     field(SCAN, "I/O Intr")   
-    field(ZNAM, "0")
-    field(ONAM, "1")
-    field(OSV, "MINOR")   
+    field(ZNAM, "Off")
+    field(ONAM, "On")  
 }
 
 record(bi,"$(P)$(R)AutoMode_RBV")
@@ -36,9 +35,9 @@ record(bi,"$(P)$(R)AutoMode_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))AUTO_MODE")
     field(SCAN, "I/O Intr")   
-    field(ZNAM, "0")
-    field(ONAM, "1")
-    field(OSV, "MINOR")   
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(ZSV, "MINOR")   
 }
 
 record(bi,"$(P)$(R)ManualMode_RBV")
@@ -46,8 +45,8 @@ record(bi,"$(P)$(R)ManualMode_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))MANUAL_MODE")
     field(SCAN, "I/O Intr")   
-    field(ZNAM, "0")
-    field(ONAM, "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
     field(OSV, "MINOR")   
 }
 
@@ -56,9 +55,9 @@ record(bi,"$(P)$(R)AtHome_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))AT_HOME")
     field(SCAN, "I/O Intr")   
-    field(ZNAM, "0")
-    field(ONAM, "1")
-    field(OSV, "MINOR")   
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(ZSV, "MINOR")   
 }
 
 record(bi,"$(P)$(R)IsSettled_RBV")
@@ -66,9 +65,9 @@ record(bi,"$(P)$(R)IsSettled_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))IS_SETTLED")
     field(SCAN, "I/O Intr")   
-    field(ZNAM, "0")
-    field(ONAM, "1")
-    field(OSV, "MINOR")   
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(ZSV, "MINOR")   
 }
 
 record(bi,"$(P)$(R)JobDone_RBV")
@@ -162,8 +161,8 @@ record(bi,"$(P)$(R)RobotPause_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))ROBOT_PAUSE")
     field(SCAN, "I/O Intr")   
-    field(ZNAM, "0")
-    field(ONAM, "1")
+    field(ZNAM, "No")
+    field(ONAM, "Paused")
     field(OSV, "MINOR")   
 }
 
@@ -171,9 +170,8 @@ record(bo,"$(P)$(R)RobotPause")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR))ROBOT_PAUSE")  
-    field(ZNAM, "0")
-    field(ONAM, "1")
-    field(OSV, "MINOR")   
+    field(ZNAM, "No")
+    field(ONAM, "Yes")  
 }
 
 record(bi,"$(P)$(R)GetFromTray_RBV")
@@ -246,8 +244,8 @@ record(bi,"$(P)$(R)SampleSpin_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR))SAMPLE_SPIN")
     field(SCAN, "I/O Intr")   
-    field(ZNAM, "0")
-    field(ONAM, "1")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
     field(OSV, "MINOR")   
 }
 
@@ -255,18 +253,16 @@ record(bo,"$(P)$(R)SampleSpin")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR))SAMPLE_SPIN")  
-    field(ZNAM, "0")
-    field(ONAM, "1")
-    field(OSV, "MINOR")   
+    field(ZNAM, "Off")
+    field(ONAM, "On")  
 }
 
 record(bo,"$(P)$(R)SampleUnsafeSpin")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR))SAMPLE_UNSAFE_SPIN")  
-    field(ZNAM, "0")
-    field(ONAM, "1")
-    field(OSV, "MINOR")   
+    field(ZNAM, "Off")
+    field(ONAM, "On")  
 }
 
 
