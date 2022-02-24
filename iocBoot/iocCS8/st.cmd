@@ -15,7 +15,7 @@ cd "${TOP}/iocBoot/${IOC}"
 
 dbLoadTemplate("CS8.substitutions")
 
-CS8Config("CS8", "172.18.6.220", "***REMOVED***", "***REMOVED***")
+CS8Config("CS8", "172.18.6.220", "***username***", "***password***")
 
 iocInit
 
